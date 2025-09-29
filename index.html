@@ -3,120 +3,250 @@
 <head>
   <meta charset="UTF-8">
   <title>Swisse 运动营养个性化评估报告</title>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.3/html2pdf.bundle.min.js"></script>
   <style>
     body {
-      font-family: "Helvetica Neue", sans-serif;
-      margin: 40px;
-      background: #f9f9f9;
-    }
-    .container {
-      background: #fff;
-      padding: 40px;
-      border-radius: 10px;
-      max-width: 800px;
+      font-family: Arial, sans-serif;
+      background: #f4f4f4;
+      padding: 30px;
+      max-width: 900px;
       margin: auto;
-      box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
     }
-    h1 {
-      color: #006644;
-    }
-    .section {
-      margin-top: 30px;
-    }
-    .card {
-      background: #e9f7f9;
-      padding: 20px;
-      margin-top: 10px;
+
+    h2, h3 { color: #d32f2f; }
+    label { display: block; margin-top: 15px; font-weight: bold; }
+    input, select { width: 300px; padding: 6px; margin-top: 5px; }
+    button { padding: 10px 20px; background-color: #d32f2f; color: #fff; border: none; cursor: pointer; margin-top: 20px; }
+    .report {
+      background: white;
+      padding: 30px;
+      margin-top: 40px;
       border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
     }
-    ul {
-      padding-left: 20px;
-    }
-    .download-btn {
+    .section { margin-top: 25px; }
+    .section h4 { color: #444; border-bottom: 1px solid #ddd; padding-bottom: 5px; }
+    ul { padding-left: 20px; }
+    .tag { display: inline-block; background: #eee; padding: 4px 10px; border-radius: 6px; font-size: 12px; margin-right: 5px; }
+
+    /* 下载按钮固定顶部 */
+    #topDownloadBtn {
       position: fixed;
       top: 20px;
       left: 20px;
-      background-color: #006644;
-      color: #fff;
-      padding: 10px 20px;
+      z-index: 999;
+      background-color: #d32f2f;
+      color: white;
+      padding: 10px 18px;
       border: none;
       border-radius: 6px;
-      font-size: 16px;
       cursor: pointer;
+      font-size: 15px;
     }
+
+    /* 弹窗 */
+    .modal {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100vw; height: 100vh;
+      background-color: rgba(0,0,0,0.5);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+    }
+
+    .modal-content {
+      background: white;
+      padding: 30px;
+      border-radius: 10px;
+      text-align: center;
+    }
+
+    .modal-content button {
+      padding: 10px 20px;
+      margin: 10px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+
+    .confirm { background-color: #d32f2f; color: white; }
+    .cancel { background-color: #ccc; }
   </style>
 </head>
 <body>
 
-<button class="download-btn" onclick="downloadPDF()">📄 下载 PDF 报告</button>
+<!-- 顶部下载按钮 -->
+<button id="topDownloadBtn" onclick="showModal()">📄 下载 PDF</button>
 
-<div class="container" id="report">
-  <h1>Swisse 运动营养个性化评估报告</h1>
-
-  <div class="section">
-    <h2>基本信息</h2>
-    <p>年龄：35岁</p>
-    <p>性别：女性</p>
-    <p>身体状况：BMI正常，偶有膝盖酸软</p>
-    <p>运动习惯：每周3次快走+瑜伽</p>
-  </div>
-
-  <div class="section">
-    <h2>营养评估结果</h2>
-    <ul>
-      <li>🦴 骨健康：⭐⭐⭐⭐ 高度需求</li>
-      <li>🏃‍♀️ 体能维持：⭐⭐ 一般需求</li>
-      <li>🧘‍♀️ 肌肉修复与关节润滑：⭐⭐⭐ 中等需求</li>
-      <li>❤️ 心血管支持：⭐ 无显著需求</li>
-    </ul>
-  </div>
-
-  <div class="section">
-    <h2>推荐产品组合</h2>
-    <div class="card">
-      <strong>Swisse Ultiboost Glucosamine Sulfate</strong>
-      <p>✔️ 有助于缓解关节疼痛，维护软骨健康，适合长期站立或体力活动者。</p>
-    </div>
-    <div class="card">
-      <strong>Swisse Calcium + Vitamin D</strong>
-      <p>✔️ 支持骨密度维护与钙吸收，适合女性骨质疏松预防。</p>
-    </div>
-    <div class="card">
-      <strong>Swisse Ultivite Women's Multivitamin</strong>
-      <p>✔️ 全面补充维生素与矿物质，支持整体免疫和代谢功能。</p>
-    </div>
-  </div>
-
-  <div class="section">
-    <h2>营养建议与生活方式提示</h2>
-    <ul>
-      <li>🥦 每日摄入富含植物蛋白的食物，如豆腐、深色绿叶蔬菜。</li>
-      <li>🚶‍♀️ 每周进行3-4次中度运动，如快走、游泳、瑜伽。</li>
-      <li>🌞 保证每日10-15分钟日晒，辅助维生素D自然合成。</li>
-      <li>⚠️ 避免高糖饮食及久坐不动。</li>
-    </ul>
+<!-- 弹窗 -->
+<div id="modal" class="modal">
+  <div class="modal-content">
+    <p>是否要下载 Swisse 个性化营养评估报告？</p>
+    <button class="confirm" onclick="startDownload()">下载</button>
+    <button class="cancel" onclick="hideModal()">取消</button>
   </div>
 </div>
 
+<h2>Swisse 运动营养个性化推荐问卷</h2>
+
+<form id="quizForm">
+  <label>年龄：<input type="number" name="age" required></label>
+  <label>性别：
+    <select name="gender">
+      <option value="male">男</option>
+      <option value="female">女</option>
+    </select>
+  </label>
+  <label>身高（cm）：<input type="number" name="height" required></label>
+  <label>体重（kg）：<input type="number" name="weight" required></label>
+
+  <label>每周运动频率：
+    <select name="exercise_freq">
+      <option value="0">0 次</option>
+      <option value="1">1–2 次</option>
+      <option value="3">3–4 次</option>
+      <option value="5">5 次及以上</option>
+    </select>
+  </label>
+
+  <label>运动强度：
+    <select name="exercise_intensity">
+      <option value="1">轻度</option>
+      <option value="2">中度</option>
+      <option value="3">高强度</option>
+    </select>
+  </label>
+
+  <label>饮食结构（蛋白/钙/蔬菜）：
+    <select name="diet">
+      <option value="low">摄入不足</option>
+      <option value="medium">中等</option>
+      <option value="high">充足</option>
+    </select>
+  </label>
+
+  <label>是否有关节问题或骨密度担忧？
+    <select name="joint">
+      <option value="yes">是</option>
+      <option value="no">否</option>
+    </select>
+  </label>
+
+  <label>家族是否有骨质疏松/肥胖/心脏病等病史？
+    <select name="family">
+      <option value="yes">是</option>
+      <option value="no">否</option>
+    </select>
+  </label>
+
+  <label>当前健康目标：
+    <select name="goal">
+      <option value="bone">骨骼健康</option>
+      <option value="weight">控制体重</option>
+      <option value="growth">成长发育</option>
+      <option value="muscle">增肌恢复</option>
+      <option value="aging">抗衰老</option>
+    </select>
+  </label>
+
+  <button type="submit">生成评估报告</button>
+</form>
+
+<div id="reportSection" class="report" style="display:none;">
+  <h3>📄 Swisse 个性化运动营养评估报告</h3>
+  <div id="reportContent"></div>
+</div>
+
 <script>
-  async function downloadPDF() {
-    const { jsPDF } = window.jspdf;
-    const doc = new jsPDF();
-    const content = document.getElementById("report").innerText;
+  document.getElementById("quizForm").onsubmit = function(e) {
+    e.preventDefault();
+    const f = e.target;
+    const age = parseInt(f.age.value);
+    const height = parseFloat(f.height.value);
+    const weight = parseFloat(f.weight.value);
+    const bmi = weight / ((height / 100) ** 2);
+    const gender = f.gender.value;
+    const freq = parseInt(f.exercise_freq.value);
+    const intensity = parseInt(f.exercise_intensity.value);
+    const diet = f.diet.value;
+    const joint = f.joint.value === "yes";
+    const family = f.family.value === "yes";
+    const goal = f.goal.value;
 
-    // 分段写入内容
-    const lines = doc.splitTextToSize(content, 180);
-    doc.text(lines, 15, 20);
+    const score = { bone: 0, weight: 0, growth: 0, muscle: 0, aging: 0 };
+    if (age > 50) score.bone += 2, score.aging += 3;
+    if (age < 12) score.growth += 5;
+    if (bmi >= 28) score.weight += 3;
+    if (bmi < 18.5) score.growth += 2;
+    if (freq >= 4) score.muscle += 3;
+    if (intensity === 3) score.muscle += 2;
+    if (diet === "low") score.bone += 2, score.growth += 2;
+    if (joint) score.bone += 3;
+    if (family) score.weight += 2, score.bone += 2, score.aging += 1;
+    if (goal) score[goal] += 5;
 
-    // 模拟浏览器下载行为
-    const blob = doc.output("blob");
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = "Swisse_运动营养评估报告.pdf";
-    a.click();
-    URL.revokeObjectURL(url);
+    const products = [];
+    if (age >= 60) products.push("Swisse CoQ10", "Swisse Collagen Booster");
+    else if (age >= 40) products.push("Swisse Calcium + Vitamin D");
+    if (bmi >= 30) products.push("Swisse Metabolism + Thermogenesis", "Swisse Detox");
+    else if (bmi < 18.5) products.push("Swisse Protein Powder");
+    if (diet === "low") products.push("Swisse Multivitamin", "Swisse Kids Bone Health");
+    if (joint) products.push("Swisse Glucosamine + Chondroitin");
+    if (goal === "muscle") products.push("Swisse Protein + Magnesium");
+    if (goal === "growth") products.push("Swisse Kids Multi + Immunity");
+    if (goal === "weight") products.push("Swisse Chlorophyll", "Swisse Fiber");
+
+    const report = `
+      <div class="section">
+        <h4>一、基本信息</h4>
+        <p>年龄：${age}岁，性别：${gender === 'male' ? '男' : '女'}，BMI：${bmi.toFixed(1)}</p>
+        <p>运动频率：每周 ${freq} 次，强度：${intensity === 1 ? "轻度" : intensity === 2 ? "中度" : "高强度"}</p>
+        <p>饮食结构：${diet === "low" ? "摄入不足" : diet === "medium" ? "中等" : "摄入充足"}</p>
+        <p>健康目标：<span class="tag">${goal}</span></p>
+      </div>
+      <div class="section">
+        <h4>二、健康维度得分</h4>
+        <ul>
+          <li>骨骼健康：${score.bone}</li>
+          <li>体重管理：${score.weight}</li>
+          <li>成长发育：${score.growth}</li>
+          <li>增肌恢复：${score.muscle}</li>
+          <li>抗衰老：${score.aging}</li>
+        </ul>
+      </div>
+      <div class="section">
+        <h4>三、推荐Swisse营养产品</h4>
+        <ul>${[...new Set(products)].map(p => `<li>${p}</li>`).join('')}</ul>
+      </div>
+      <div class="section">
+        <h4>四、使用建议</h4>
+        <p>上述产品建议连续使用 3-6 个月。建议搭配饮食调整和适度运动，可每季度重新填写此问卷以获取新报告。</p>
+      </div>
+    `;
+
+    document.getElementById("reportContent").innerHTML = report;
+    document.getElementById("reportSection").style.display = "block";
+  };
+
+  function showModal() {
+    document.getElementById("modal").style.display = "flex";
+  }
+
+  function hideModal() {
+    document.getElementById("modal").style.display = "none";
+  }
+
+  function startDownload() {
+    hideModal();
+    const element = document.getElementById("reportSection");
+    if (!element || element.style.display === "none") {
+      alert("请先填写问卷并生成报告。");
+      return;
+    }
+    html2pdf().from(element).save("Swisse_营养评估报告.pdf");
   }
 </script>
 
