@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8">
+  <title>运动营养推荐系统</title>
+  <style>
+    body { font-family: sans-serif; padding: 20px; max-width: 800px; margin: auto; background: #f7f7f7; }
+    h2 { color: #2b7c88; }
+    label { display: block; margin-top: 10px; }
+    input, select { margin-top: 5px; padding: 5px; width: 100%; max-width: 300px; }
+    button { margin-top: 20px; padding: 10px 20px; background-color: #2b7c88; color: white; border: none; cursor: pointer; }
+    .result { margin-top: 30px; padding: 20px; background: #fff; border-left: 4px solid #2b7c88; }
+    ul { padding-left: 20px; }
+  </style>
+</head>
+<body>
+
+  <h2>🏋️‍♀️ 运动营养个性化推荐系统</h2>
+
+  <form id="quizForm">
+    <label>年龄：
+      <input type="number" name="age" required>
+    </label>
+
+    <label>性别：
+      <select name="gender">
+        <option value="male">男</option>
+        <option value="female">女</option>
+      </select>
+    </label>
+
+    <label>身高（cm）：
+      <input type="number" name="height" required>
+    </label>
+
+    <label>体重（kg）：
+      <input type="number" name="weight" required>
+    </label>
+
+    <label>每周运动频率：
+      <select name="exercise">
+        <option value="0">0 次</option>
+        <option value="1">1–2 次</option>
+        <option value="3">3–4 次</option>
+        <option value="5">5 次以上</option>
+      </select>
+    </label>
+
+    <label>您的目标：
+      <select name="goal">
+        <option value="bone">骨健康</option>
+        <option value="weight">控制体重</option>
+        <option value="growth">儿童/青少年成长</option>
+        <option value="muscle">增肌或增强体能</option>
+        <option value="antiaging">延缓衰老/关节保护</option>
+      </select>
+    </label>
+
+    <label>是否有关节疼痛或僵硬？
+      <select name="joint">
+        <option value="yes">是</option>
+        <option value="no">否</option>
+      </select>
+    </label>
+
+    <label>家族是否有骨质疏松病史？
+      <select name="familyHistory">
+        <option value="yes">是</option>
+        <option value="no">否</option>
+      </select>
+    </label>
+
+    <label>饮食中是否有钙/维D来源（如奶制品、鱼类）？
+      <select name="dietCalcium">
+        <option value="yes">有</option>
+        <option value="no">没有</option>
+      </select>
+    </label>
+
+    <button type="submit">提交问卷并推荐产品</button>
+  </form>
+
+  <div class="result" id="resultBox" style="display:none;">
+    <h3>✅ 推荐的营养产品组合：</h3>
+    <ul id="recommendList"></ul>
+  </div>
+
+  <script>
+    document.getElementById("quizForm").onsubmit = function(event) {
+      event.preventDefault();
+
+      const form = event.target;
+      const age = parseInt(form.age.value);
+      const height = parseFloat(form.height.value);
+      const weight = parseFloat(form.weight.value);
+      const bmi = weight / ((height / 100) ** 2);
+      const exercise = parseInt(form.exercise.value);
+      const goal = form.goal.value;
+      const joint = form.joint.value === "yes";
+      const familyHistory = form.familyHistory.value === "yes";
+      const dietCalcium = form.dietCalcium.value === "yes";
+
+      // 初始化打分
+      const score = {
+        bone: 0,
+        weight: 0,
+        growth: 0,
+        muscle: 0,
+        antiaging: 0
+      };
+
+      // 评分逻辑
+      if (goal === 'bone' || age > 50) score.bone += 3;
+      if (joint) score.bone += 3;
+      if (familyHistory) score.bone += 2;
+      if (!dietCalcium) score.bone += 1;
+
+      if (goal === 'weight') score.weight += 2;
+      if (bmi > 27) score.weight += 2;
+      if (exercise <= 1) score.weight += 1;
+
+      if (goal === 'growth' && age <= 18) score.growth += 5;
+
+      if (goal === 'muscle' && exercise >= 3) score.muscle += 4;
+
+      if (goal === 'antiaging' || age > 60) score.antiaging += 3;
+
+      // 推荐逻辑
+      const recommendations = [];
+
+      if (score.bone >= 4)
+        recommendations.push("氨糖", "软骨素", "钙+维生素D3", "胶原蛋白肽");
+
+      if (score.weight >= 3)
+        recommendations.push("代餐粉", "左旋肉碱", "益生菌", "绿茶提取物");
+
+      if (score.growth >= 4)
+        recommendations.push("钙+VD", "乳清蛋白", "锌", "复合维生素", "益生菌");
+
+      if (score.muscle >= 3)
+        recommendations.push("乳清蛋白粉", "肌酸", "BCAA支链氨基酸", "电解质补剂");
+
+      if (score.antiaging >= 3)
+        recommendations.push("辅酶Q10", "白藜芦醇", "复合抗氧化剂");
+
+      // 输出结果
+      const resultBox = document.getElementById("resultBox");
+      const resultList = document.getElementById("recommendList");
+      resultList.innerHTML = "";
+      if (recommendations.length > 0) {
+        [...new Set(recommendations)].forEach(item => {
+          const li = document.createElement("li");
+          li.textContent = item;
+          resultList.appendChild(li);
+        });
+        resultBox.style.display = "block";
+      } else {
+        resultList.innerHTML = "<li>当前数据未指示明确推荐，请咨询专业人士。</li>";
+        resultBox.style.display = "block";
+      }
+    }
+  </script>
+
+</body>
+</html>
