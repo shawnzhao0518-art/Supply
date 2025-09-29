@@ -10,7 +10,6 @@
       margin: 40px;
       background: #f9f9f9;
     }
-
     .container {
       background: #fff;
       padding: 40px;
@@ -19,26 +18,21 @@
       margin: auto;
       box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
     }
-
     h1 {
       color: #006644;
     }
-
     .section {
       margin-top: 30px;
     }
-
     .card {
       background: #e9f7f9;
       padding: 20px;
       margin-top: 10px;
       border-radius: 8px;
     }
-
     ul {
       padding-left: 20px;
     }
-
     .download-btn {
       position: fixed;
       top: 20px;
@@ -50,61 +44,12 @@
       border-radius: 6px;
       font-size: 16px;
       cursor: pointer;
-      z-index: 999;
-    }
-
-    .modal {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100vw;
-      height: 100vh;
-      background: rgba(0,0,0,0.4);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      z-index: 1000;
-    }
-
-    .modal-content {
-      background: #fff;
-      padding: 20px 30px;
-      border-radius: 12px;
-      text-align: center;
-      font-size: 16px;
-    }
-
-    .modal-content button {
-      margin: 10px 10px 0 10px;
-      padding: 8px 20px;
-      font-size: 14px;
-      border: none;
-      border-radius: 6px;
-      cursor: pointer;
-    }
-
-    .confirm {
-      background-color: #006644;
-      color: white;
-    }
-
-    .cancel {
-      background-color: #ccc;
     }
   </style>
 </head>
 <body>
 
-<button class="download-btn" onclick="showConfirm()">📄 下载 PDF 报告</button>
-
-<!-- 弹窗模态框 -->
-<div id="modal" class="modal" style="display: none;">
-  <div class="modal-content">
-    <p>是否要下载 Swisse 运动营养评估报告？</p>
-    <button class="confirm" onclick="confirmDownload()">下载</button>
-    <button class="cancel" onclick="hideConfirm()">取消</button>
-  </div>
-</div>
+<button class="download-btn" onclick="downloadPDF()">📄 下载 PDF 报告</button>
 
 <div class="container" id="report">
   <h1>Swisse 运动营养个性化评估报告</h1>
@@ -155,22 +100,16 @@
 </div>
 
 <script>
-  function showConfirm() {
-    document.getElementById("modal").style.display = "flex";
-  }
-
-  function hideConfirm() {
-    document.getElementById("modal").style.display = "none";
-  }
-
-  async function confirmDownload() {
-    hideConfirm();
+  async function downloadPDF() {
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF();
     const content = document.getElementById("report").innerText;
+
+    // 分段写入内容
     const lines = doc.splitTextToSize(content, 180);
     doc.text(lines, 15, 20);
 
+    // 模拟浏览器下载行为
     const blob = doc.output("blob");
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
