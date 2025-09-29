@@ -40,7 +40,8 @@
       border: none;
       cursor: pointer;
       border-radius: 4px;
-      margin-top: 20px;
+      margin: 20px auto;
+      display: block;
     }
     .button:hover {
       background-color: #004d40;
@@ -48,6 +49,9 @@
   </style>
 </head>
 <body>
+
+  <button class="button" onclick="downloadPDF()">导出为 PDF 报告</button>
+
   <div class="container" id="report-content">
     <h1>Swisse 运动营养个性化评估报告</h1>
 
@@ -100,13 +104,12 @@
     </div>
   </div>
 
-  <button class="button" onclick="downloadPDF()">导出为 PDF 报告</button>
-
   <script>
     function downloadPDF() {
       const element = document.getElementById("report-content");
       html2pdf().from(element).save("Swisse_Report.pdf");
     }
   </script>
+
 </body>
 </html>
